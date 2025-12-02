@@ -22,50 +22,33 @@
 
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {
-  BrowserRouter as Router,
-  Link,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
-
-import PersonIndex from "./persons/PersonIndex";
-import PersonDetail from "./persons/PersonDetail";
-import PersonForm from "./persons/PersonForm";
-import InvoiceForm from "./invoices/InvoiceForm";
-
+import { BrowserRouter as Router, Link, Routes, Route, Navigate } from "react-router-dom";
+import { routes } from "./Routes";
 
 export function App() {
   return (
     <Router>
       <div className="container">
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light mb-3">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item">
-              <Link to={"/persons"} className="nav-link">
-                Osoby
-              </Link>
+              <Link to="/persons" className="nav-link">Osoby</Link>
             </li>
             <li className="nav-item">
-            <Link to={"/invoices/create"} className="nav-link">
-              Nová faktura
-            </Link>
-          </li>
+              <Link to="/invoices/create" className="nav-link">Nová faktura</Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/invoices" className="nav-link">Seznam faktur</Link>
+            </li>
           </ul>
         </nav>
 
         <Routes>
-          <Route index element={<Navigate to={"/persons"} />} />
-          <Route path="/persons">
-            <Route index element={<PersonIndex />} />
-            <Route path="show/:id" element={<PersonDetail />} />
-            <Route path="create" element={<PersonForm />} />
-            <Route path="edit/:id" element={<PersonForm />} />
-          </Route>
-          
-          <Route path="/invoices/create" element={<InvoiceForm />} />
-
+          {routes.map((route, i) =>
+            route.index
+              ? <Route key={i} index element={route.element} />
+              : <Route key={i} path={route.path} element={route.element} />
+          )}
         </Routes>
       </div>
     </Router>
