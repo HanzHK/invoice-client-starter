@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const InvoiceTable = ({ invoices, setInvoices }) => {
+  const navigate = useNavigate();
+
   const deleteInvoice = async (id) => {
     if (!window.confirm("Opravdu smazat fakturu?")) return;
     try {
@@ -44,7 +47,7 @@ const InvoiceTable = ({ invoices, setInvoices }) => {
             <td>
               <button
                 className="btn btn-info btn-sm"
-                onClick={() => console.log("Detail faktury:", inv._id)}
+                onClick={() => navigate(`/invoices/show/${inv._id}`)}
               >
                 Detail
               </button>
@@ -52,7 +55,7 @@ const InvoiceTable = ({ invoices, setInvoices }) => {
             <td>
               <button
                 className="btn btn-warning btn-sm"
-                onClick={() => console.log("Editace faktury:", inv._id)}
+                onClick={() => navigate(`/invoices/edit/${inv._id}`)}
               >
                 Editovat
               </button>

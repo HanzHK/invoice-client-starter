@@ -1,20 +1,26 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
+import Layout from "./layout/Layout";
+
 
 import PersonIndex from "./persons/PersonIndex";
 import PersonDetail from "./persons/PersonDetail";
 import PersonForm from "./persons/PersonForm";
 import InvoiceForm from "./invoices/InvoiceForm";
 import InvoiceList from "./invoices/InvoiceList";
+import InvoiceDetail from "./invoices/InvoiceDetail";
+import InvoiceEdit from "./invoices/InvoiceEdit";
                                                                                                                                                       
 export const routes = [
   { index: true, element: <Navigate to="/persons" /> },
 
-  { path: "/persons", element: <PersonIndex /> },
-  { path: "/persons/show/:id", element: <PersonDetail /> },
-  { path: "/persons/create", element: <PersonForm /> },
-  { path: "/persons/edit/:id", element: <PersonForm /> },
+  { path: "/persons", element: <Layout><PersonIndex /></Layout> },
+  { path: "/persons/show/:id", element: <Layout><PersonDetail /></Layout> },
+  { path: "/persons/create", element: <Layout><PersonForm /></Layout> },
+  { path: "/persons/edit/:id", element: <Layout><PersonForm /></Layout> },
 
-  { path: "/invoices", element: <InvoiceList /> },
-  { path: "/invoices/create", element: <InvoiceForm /> },
+  { path: "/invoices", element: <Layout><InvoiceList /></Layout> },
+  { path: "/invoices/create", element: <Layout><InvoiceForm /></Layout> },
+  { path: "/invoices/show/:id", element: <Layout><InvoiceDetail /></Layout> },
+  { path: "/invoices/edit/:id", element: <Layout><InvoiceEdit /></Layout> },
 ];
