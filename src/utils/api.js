@@ -42,10 +42,12 @@ const fetchData = (url, requestOptions) => {
 
 export const apiGet = (url, params) => {
     const filteredParams = Object.fromEntries(
-        Object.entries(params || {}).filter(([_, value]) => value != null)
+        Object.entries(params || {}).filter(([_, value]) => value != null && value !== "")
     );
 
-    const apiUrl = `${url}?${new URLSearchParams(filteredParams)}`;
+    const queryString = new URLSearchParams(filteredParams).toString();
+    const apiUrl = queryString ? `${url}?${queryString}` : url;
+
     const requestOptions = {
         method: "GET",
     };

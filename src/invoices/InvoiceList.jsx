@@ -1,40 +1,56 @@
 import React, { useEffect, useState } from "react";
+import { apiGet } from "../utils/api";
+import InvoiceFilter from "../components/filter/InvoiceFilter";
+import { Box, Button, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import { formatCurrency } from "../utils/currencyFormat";
 import { Link } from "react-router-dom";
 
-import { apiGet } from "../utils/api";
-import FlashMessage from "../components/FlashMessage";
-import InvoiceTable from "./InvoiceTable.jsx";
-
 const InvoiceList = () => {
+  const [filters, setFilters] = useState({});
   const [invoices, setInvoices] = useState([]);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    apiGet("/api/invoices")
+    apiGet("/api/invoices", filters)
       .then((data) => setInvoices(data))
-      .catch((err) => {
-        console.error("Chyba při načítání faktur:", err);
-        setError("Nepodařilo se načíst seznam faktur.");
-      });
-  }, []);
+      .catch((err) => console.error("Chyba při načítání faktur:", err));
+  }, [filters]);
 
   return (
-    <div>
-      <h1>Seznam faktur</h1>
-      <hr />
+    <Box p={6}>
+      <Box display="flex" justifyContent="space-between" mb={4}>
+        <InvoiceFilter onFilterChange={setFilters} />
+        <Button colorScheme="teal">Vytvořit novou fakturu</Button>
+      </Box>
 
-      <Link to={"/invoices/create"} className="btn btn-success mb-3">
-        Vytvořit novou fakturu
-      </Link>
+<Table variant="striped" colorScheme="teal">
+  <Thead>
+    <Tr>
+      <Th>Číslo faktury</Th>
+      <Th>Produkt</Th>
+      <Th>Částka</Th>
+      <Th>Kupující</Th>
+      <Th>Prodávající</Th>
+    </Tr>
+  </Thead>
+  <Tbody>
+    {invoices.map((inv) => (
+      <Tr key={inv._id}>
+        <Td>
+          <Link to={`/invoices/show/${inv._id}`} style={{ color: "teal", fontWeight: "bold" }}>
+            {inv.invoiceNumber}
+          </Link>
 
-      {error && <FlashMessage theme="danger" text={error} />}
+        </Td>
+        <Td>{inv.product}</Td>
+        <Td>{formatCurrency(inv.price)}</Td>
+        <Td>{inv.buyer?.name}</Td>
+        <Td>{inv.seller?.name}</Td>
+      </Tr>
+    ))}
+  </Tbody>
+</Table>
 
-      {invoices.length === 0 ? (
-        <p>Žádné faktury nejsou k dispozici.</p>
-      ) : (
-        <InvoiceTable invoices={invoices} setInvoices={setInvoices} />
-      )}
-    </div>
+    </Box>
   );
 };
 
