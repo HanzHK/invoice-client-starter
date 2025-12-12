@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { apiGet } from "../utils/api";
+import CountryDisplay from "../components/common/CountryDisplay";
+import PartyCard from "../components/common/PartyCard";
 import { FaIdCard, FaRegEnvelope, FaPhone, FaMapMarkerAlt, FaStickyNote } from "react-icons/fa";
 import {
   Box,
@@ -34,34 +36,10 @@ const PersonDetail = () => {
         Detail osoby {person.name}
       </Heading>
 
-      <Stack spacing={6}>
-            <Card>
-      <CardHeader>
-        <Heading size="md">Základní údaje</Heading>
-      </CardHeader>
-      <CardBody>
-        <Stack spacing={3}>
-           <Text>
-        <Icon as={FaIdCard} mr={2} /> IČ: {person.identificationNumber}
-      </Text>
-      <Text>
-        <Icon as={FaIdCard} mr={2} /> DIČ: {person.taxNumber}
-      </Text>
-      <Text>
-        <Icon as={FaRegEnvelope} mr={2} /> {person.mail}
-      </Text>
-      <Text>
-        <Icon as={FaPhone} mr={2} /> {person.telephone}
-      </Text>
-      <Text>
-        <Icon as={FaMapMarkerAlt} mr={2} /> {person.street}, {person.zip} {person.city}, {person.country}
-      </Text>
-      <Text>
-        <Icon as={FaStickyNote} mr={2} /> {person.note}
-      </Text>
-        </Stack>
-      </CardBody>
-    </Card>
+           <Stack spacing={6}>
+            
+        {/* Základní údaje */}
+        <PartyCard title="Základní údaje" party={person} />
 
         {/* Vystavené faktury */}
         <Card>
