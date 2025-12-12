@@ -1,63 +1,96 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { apiGet } from "../utils/api";
+import { FaIdCard, FaRegEnvelope, FaPhone, FaMapMarkerAlt, FaStickyNote } from "react-icons/fa";
 import {
   Box,
-  Card,
-  CardHeader,
-  CardBody,
+  Icon,
   Heading,
   Text,
   Stack,
   Divider,
+  Card,
+  CardHeader,
+  CardBody,
 } from "@chakra-ui/react";
-
-import Country from "./Country";
+import PersonInvoicesTable from "../components/tables/PersonInvoicesTable";
 
 const PersonDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [person, setPerson] = useState(null);
 
   useEffect(() => {
-    apiGet(`/api/Persons/${id}`)
+    apiGet(`/api/persons/${id}`)
       .then((data) => setPerson(data))
-      .catch((error) => console.error("Error fetching person:", error));
+      .catch((err) => console.error("Error fetching person:", err));
   }, [id]);
 
-  if (!person) {
-    return <Text>Načítám data...</Text>;
-  }
-
-  const country =
-    Country.CZECHIA === person.country ? "Česká republika" : "Slovensko";
+  if (!person) return <Text>Načítám osobu...</Text>;
 
   return (
     <Box p={6}>
       <Heading size="lg" mb={6}>
-        Detail osoby
+        Detail osoby {person.name}
       </Heading>
 
-      <Card>
-        <CardHeader>
-  <Heading size="md">{person.name}</Heading>
-        </CardHeader>
-        <CardBody>
-        <Stack divider={<Divider />} spacing={2}>
-            <Text><strong>IČ:</strong> {person.identificationNumber}</Text>
-            <Text><strong>DIČ:</strong> {person.taxNumber}</Text>
-            <Text>
-            <strong>Bankovní účet:</strong> {person.accountNumber}/{person.bankCode} ({person.iban})
-            </Text>
-            <Text><strong>Tel.:</strong> {person.telephone}</Text>
-            <Text><strong>Mail:</strong> {person.mail}</Text>
-            <Text>
-            <strong>Sídlo:</strong> {person.street}, {person.city}, {person.zip}, {country}
-            </Text>
-            <Text><strong>Poznámka:</strong> {person.note}</Text>
+      <Stack spacing={6}>
+            <Card>
+      <CardHeader>
+        <Heading size="md">Základní údaje</Heading>
+      </CardHeader>
+      <CardBody>
+        <Stack spacing={3}>
+           <Text>
+        <Icon as={FaIdCard} mr={2} /> IČ: {person.identificationNumber}
+      </Text>
+      <Text>
+        <Icon as={FaIdCard} mr={2} /> DIČ: {person.taxNumber}
+      </Text>
+      <Text>
+        <Icon as={FaRegEnvelope} mr={2} /> {person.mail}
+      </Text>
+      <Text>
+        <Icon as={FaPhone} mr={2} /> {person.telephone}
+      </Text>
+      <Text>
+        <Icon as={FaMapMarkerAlt} mr={2} /> {person.street}, {person.zip} {person.city}, {person.country}
+      </Text>
+      <Text>
+        <Icon as={FaStickyNote} mr={2} /> {person.note}
+      </Text>
         </Stack>
-        </CardBody>
+      </CardBody>
+    </Card>
 
-      </Card>
+        {/* Vystavené faktury */}
+        <Card>
+          <CardHeader>
+            <Heading size="md">Vystavené faktury</Heading>
+          </CardHeader>
+          <CardBody>
+            <PersonInvoicesTable
+              identificationNumber={person.identificationNumber}
+              type="sales"
+              onDetail={(inv) => navigate(`/invoices/show/${inv._id}`)}
+            />
+          </CardBody>
+        </Card>
+
+        {/* Přijaté faktury */}
+        <Card>
+          <CardHeader>
+            <Heading size="md">Přijaté faktury</Heading>
+          </CardHeader>
+          <CardBody>
+            <PersonInvoicesTable
+              identificationNumber={person.identificationNumber}
+              type="purchases"
+              onDetail={(inv) => navigate(`/invoices/show/${inv._id}`)}
+            />
+          </CardBody>
+        </Card>
+      </Stack>
     </Box>
   );
 };
