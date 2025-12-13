@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Flex, Heading, Container } from "@chakra-ui/react";
 import Navigation from "./Navigation";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -15,7 +16,7 @@ const Header = () => {
       <Container maxW="7xl">
         <Flex justify="space-between" align="center">
           <Heading size="lg" fontWeight="bold" letterSpacing="tight">
-            📄 Správce faktur
+             <Link to="/" style={{ textDecoration: "none", color: "inherit" }}> 📄 Správce faktur</Link>
           </Heading>
           <Navigation />
         </Flex>

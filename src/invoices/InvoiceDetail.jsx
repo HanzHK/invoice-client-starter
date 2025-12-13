@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { apiGet } from "../utils/api";
 import CountryDisplay from "../components/common/CountryDisplay";
+import dateStringFormatter from "../utils/dateStringFormatter";
 import PartyCard from "../components/common/PartyCard";
 import {
   Box,
@@ -44,8 +45,8 @@ const InvoiceDetail = () => {
           </CardHeader>
           <CardBody>
             <Stack divider={<Divider />} spacing={0}>
-              <Text><strong>Datum vystavení:</strong> {invoice.issued}</Text>
-              <Text><strong>Datum splatnosti:</strong> {invoice.dueDate}</Text>
+              <Text><strong>Datum vystavení:</strong> {dateStringFormatter(invoice.issued, true)}</Text>
+              <Text><strong>Datum splatnosti:</strong> {dateStringFormatter(invoice.dueDate, true)}</Text>
               <Text><strong>Produkt:</strong> {invoice.product}</Text>
               <Text><strong>Cena:</strong> {invoice.price}</Text>
               <Text><strong>DPH:</strong> {invoice.vat}%</Text>

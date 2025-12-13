@@ -71,8 +71,20 @@ return (
             </Td>
             <Td>{inv.product}</Td>
             <Td>{formatCurrency(inv.price)}</Td>
-            <Td>{inv.buyer?.name}</Td>
-            <Td>{inv.seller?.name}</Td>
+            <Td>  
+              <Link to={`/persons/show/${inv.buyer?._id}`}
+                style={{ color: "teal", fontWeight: "bold" }}
+              >
+                {inv.buyer?.name}
+              </Link>
+          </Td>
+            <Td>
+              <Link to={`/persons/show/${inv.seller?._id}`}
+              style={{ color: "teal", fontWeight: "bold" }}
+               >
+              {inv.seller?.name}
+              </Link>
+            </Td>
             <Td>
               <InvoiceActions
                 invoice={inv}

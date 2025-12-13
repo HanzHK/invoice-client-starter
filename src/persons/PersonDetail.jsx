@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { apiGet } from "../utils/api";
-import CountryDisplay from "../components/common/CountryDisplay";
 import PartyCard from "../components/common/PartyCard";
-import { FaIdCard, FaRegEnvelope, FaPhone, FaMapMarkerAlt, FaStickyNote } from "react-icons/fa";
+import PersonStatistics from "../components/statistics/PersonStatistics";
 import {
   Box,
-  Icon,
   Heading,
   Text,
   Stack,
-  Divider,
   Card,
   CardHeader,
   CardBody,
+  HStack,
+  Icon,
 } from "@chakra-ui/react";
+import { FaArrowUp, FaArrowDown, FaChartLine } from "react-icons/fa";
 import PersonInvoicesTable from "../components/tables/PersonInvoicesTable";
 
 const PersonDetail = () => {
@@ -36,15 +36,20 @@ const PersonDetail = () => {
         Detail osoby {person.name}
       </Heading>
 
-           <Stack spacing={6}>
-            
+      <Stack spacing={6}>
         {/* Základní údaje */}
         <PartyCard title="Základní údaje" party={person} />
 
-        {/* Vystavené faktury */}
+        {/* Vystavené faktury = PŘÍJMY */}
         <Card>
           <CardHeader>
-            <Heading size="md">Vystavené faktury</Heading>
+            <HStack spacing={2}>
+              <Icon as={FaArrowUp} color="green.500" boxSize={5} />
+              <Heading size="md">Vystavené faktury (příjmy)</Heading>
+            </HStack>
+            <Text fontSize="sm" color="gray.600" mt={1}>
+              Faktury, které vystavil jiným subjektům (příjmy)
+            </Text>
           </CardHeader>
           <CardBody>
             <PersonInvoicesTable
@@ -55,10 +60,16 @@ const PersonDetail = () => {
           </CardBody>
         </Card>
 
-        {/* Přijaté faktury */}
+        {/* Přijaté faktury = VÝDAJE */}
         <Card>
           <CardHeader>
-            <Heading size="md">Přijaté faktury</Heading>
+            <HStack spacing={2}>
+              <Icon as={FaArrowDown} color="red.500" boxSize={5} />
+              <Heading size="md">Přijaté faktury (výdaje)</Heading>
+            </HStack>
+            <Text fontSize="sm" color="gray.600" mt={1}>
+              Faktury pro tento subjekt vysvaené jinými subjekty (výdaje)
+            </Text>
           </CardHeader>
           <CardBody>
             <PersonInvoicesTable
@@ -66,6 +77,19 @@ const PersonDetail = () => {
               type="purchases"
               onDetail={(inv) => navigate(`/invoices/show/${inv._id}`)}
             />
+          </CardBody>
+        </Card>
+
+        {/* Statistiky */}
+        <Card>
+          <CardHeader>
+            <HStack spacing={2}>
+              <Icon as={FaChartLine} color="blue.500" boxSize={5} />
+              <Heading size="md">Statistiky</Heading>
+            </HStack>
+          </CardHeader>
+          <CardBody>
+            <PersonStatistics personId={person._id} />
           </CardBody>
         </Card>
       </Stack>

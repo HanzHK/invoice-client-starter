@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Box, Table, Thead, Tbody, Tr, Th, Td, Spinner } from "@chakra-ui/react";
 import { apiGet } from "../../utils/api";
 import { formatCurrency } from "../../utils/currencyFormat";
+import dateStringFormatter from "../../utils/dateStringFormatter";
 import { Link } from "react-router-dom";
+
 
 const PersonInvoicesTable = ({ identificationNumber, type }) => {
   const [invoices, setInvoices] = useState([]);
@@ -49,8 +51,8 @@ const PersonInvoicesTable = ({ identificationNumber, type }) => {
               </Td>
               <Td>{inv.product}</Td>
               <Td>{formatCurrency(inv.price)}</Td>
-              <Td>{inv.issued}</Td>
-              <Td>{inv.dueDate}</Td>
+              <Td>{dateStringFormatter(inv.issued, true, true)}</Td>
+              <Td>{dateStringFormatter(inv.dueDate, true, true)}</Td>
               <Td>{inv.seller?.name}</Td>
               <Td>{inv.buyer?.name}</Td>
             </Tr>
