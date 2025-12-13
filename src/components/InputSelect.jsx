@@ -1,52 +1,25 @@
 import React from "react";
+import { FormControl, FormLabel, Select } from "@chakra-ui/react";
 
 export function InputSelect(props) {
-  const multiple = props.multiple;
   const required = props.required || false;
 
-  // příznak označení prázdné hodnoty
-  const emptySelected = multiple ? props.value?.length === 0 : !props.value;
-  // příznak objektové struktury položek
-  const objectItems = props.enum ? false : true;
-
   return (
-    <div className="form-group">
-      <label>{props.label}:</label>
-      <select
-        required={required}
-        className="browser-default form-select"
-        multiple={multiple}
+    <FormControl isRequired={required}>
+      <FormLabel>{props.label}</FormLabel>
+      <Select
         name={props.name}
-        onChange={props.handleChange}
         value={props.value}
+        onChange={props.handleChange}
+        placeholder="Vyberte..."
       >
-        {required ? (
-          /* prázdná hodnota zakázaná (pro úpravu záznamu) */
-          <option disabled value={emptySelected}>
-            {props.prompt}
+        {props.items.map((item) => (
+          <option key={item._id} value={item._id}>
+            {item.name}
           </option>
-        ) : (
-          /* prázdná hodnota povolená (pro filtrování přehledu) */
-          <option key={0} value={emptySelected}>
-            ({props.prompt})
-          </option>
-        )}
-
-        {objectItems
-          ? /* vykreslení položek jako objektů z databáze (osobnosti) */
-            props.items.map((item, index) => (
-              <option key={required ? index : index + 1} value={item._id}>
-                {item.name}
-              </option>
-            ))
-          : /* vykreslení položek jako hodnot z výčtu (žánry) */
-            props.items.map((item, index) => (
-              <option key={required ? index : index + 1} value={item}>
-                {props.enum[item]}
-              </option>
-            ))}
-      </select>
-    </div>
+        ))}
+      </Select>
+    </FormControl>
   );
 }
 

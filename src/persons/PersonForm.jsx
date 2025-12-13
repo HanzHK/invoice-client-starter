@@ -81,7 +81,7 @@ const PersonForm = () => {
 
     return (
         <div>
-            <h1>{id ? "Upravit" : "Vytvořit"} osobnost</h1>
+            <h1>{id ? "Upravit" : "Vytvořit"} subjekt (firma, osoba..)</h1>
             <hr/>
             {errorState ? (
                 <div className="alert alert-danger">{errorState}</div>
@@ -237,7 +237,7 @@ const PersonForm = () => {
                 />
 
                 <InputField
-                    required={true}
+                    required={false}
                     type="text"
                     name="note"
                     label="Poznámka"
