@@ -5,7 +5,7 @@ const InvoiceActions = ({ invoice, onDetail, onEdit, onDelete }) => (
   <ButtonGroup size="sm" spacing={2}>
     <Button colorScheme="blue" onClick={() => onDetail(invoice)}>Detail</Button>
     <Button colorScheme="yellow" onClick={() => onEdit(invoice)}>Editovat</Button>
-    <Button colorScheme="red" onClick={() => onDelete(invoice.id)}>Smazat</Button>
+    <Button colorScheme="red" onClick={() => onDelete(invoiceId)}>Smazat</Button>
   </ButtonGroup>
 );
 
