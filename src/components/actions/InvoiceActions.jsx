@@ -6,9 +6,11 @@ const InvoiceActions = ({ invoiceId, onDetail, onEdit, onDelete }) => (
     <Button colorScheme="blue" onClick={() => onDetail(invoiceId)}>
       Detail
     </Button>
+
     <Button colorScheme="yellow" onClick={() => onEdit(invoiceId)}>
       Editovat
     </Button>
+
     <Button
       colorScheme="red"
       onClick={() => {

@@ -1,105 +1,105 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { Box, Button, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
-import { apiGet } from "../utils/api";
-import { formatCurrency } from "../utils/currencyFormat";
-import InvoiceFilter from "../components/filter/InvoiceFilter";
+import { Link, useNavigate } from "react-router-dom";
+import { apiGet, apiDelete } from "../utils/api";
+import InvoiceTable from "../components/tables/InvoiceTable";
+import {
+  Box,
+  Heading,
+  Button,
+  useToast,
+  Flex,
+  Spinner,
+  Center,
+} from "@chakra-ui/react";
+import { FaPlus } from "react-icons/fa";
 import InvoiceActions from "../components/actions/InvoiceActions";
 
 const InvoiceList = () => {
-  const navigate = useNavigate();
-  const [filters, setFilters] = useState({});
   const [invoices, setInvoices] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const toast = useToast();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    apiGet("/api/invoices", filters)
-      .then((data) => setInvoices(data))
-      .catch((err) => console.error("Chyba při načítání faktur:", err));
-  }, [filters]);
-
-  const handleDelete = async (invoice) => {
-    if (!window.confirm("Opravdu smazat fakturu?")) return;
+  const deleteInvoice = async (id) => {
     try {
-      const res = await fetch(`/api/invoices/${invoice._id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Mazání faktury selhalo");
-      setInvoices(invoices.filter((inv) => inv._id !== invoice._id));
-    } catch (err) {
-      console.error("Chyba při mazání faktury:", err);
-      alert("Nepodařilo se smazat fakturu.");
+      await apiDelete(`/api/invoices/${id}`);
+      setInvoices(invoices.filter((item) => item._id !== id));
+
+      toast({
+        title: "Faktura smazána",
+        description: "Faktura byla úspěšně odstraněna.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error(error.message);
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se smazat fakturu.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
-return (
-  <Box p={6}>
-    {/* horní řádek s filtrem */}
-    <Box mb={4}>
-      <InvoiceFilter onFilterChange={setFilters} />
+  useEffect(() => {
+    setIsLoading(true);
+    apiGet("/api/invoices")
+      .then((data) => {
+        setInvoices(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+        toast({
+          title: "Chyba při načítání",
+          description: "Nepodařilo se načíst seznam faktur.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+  }, [toast]);
+
+  if (isLoading) {
+    return (
+      <Center h="400px">
+        <Spinner size="xl" color="blue.500" />
+      </Center>
+    );
+  }
+
+  return (
+    <Box p={6}>
+      <Flex justify="space-between" align="center" mb={6}>
+        <Heading size="lg">Seznam faktur</Heading>
+        <Button
+          as={Link}
+          to="/invoices/create"
+          leftIcon={<FaPlus />}
+          colorScheme="green"
+          size="lg"
+        >
+          Nová faktura
+        </Button>
+      </Flex>
+
+      <InvoiceTable
+        invoices={invoices}
+        renderActions={(inv) => (
+          <InvoiceActions
+            invoiceId={inv._id}
+            onDetail={(id) => navigate(`/invoices/show/${id}`)}
+            onEdit={(id) => navigate(`/invoices/edit/${id}`)}
+            onDelete={deleteInvoice}
+          />
+        )}
+      />
     </Box>
-
-    {/* tlačítko na samostatném řádku */}
-    <Box mb={4}>
-      <Button
-        colorScheme="teal"
-        onClick={() => navigate("/invoices/create")}
-      >
-        Vytvořit novou fakturu
-      </Button>
-    </Box>
-
-    {/* tabulka */}
-    <Table variant="striped" colorScheme="teal">
-      <Thead>
-        <Tr>
-          <Th>Číslo faktury</Th>
-          <Th>Produkt</Th>
-          <Th>Částka</Th>
-          <Th>Kupující</Th>
-          <Th>Prodávající</Th>
-          <Th>Akce</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {invoices.map((inv) => (
-          <Tr key={inv._id}>
-            <Td>
-              <Link
-                to={`/invoices/show/${inv._id}`}
-                style={{ color: "teal", fontWeight: "bold" }}
-              >
-                {inv.invoiceNumber}
-              </Link>
-            </Td>
-            <Td>{inv.product}</Td>
-            <Td>{formatCurrency(inv.price)}</Td>
-            <Td>  
-              <Link to={`/persons/show/${inv.buyer?._id}`}
-                style={{ color: "teal", fontWeight: "bold" }}
-              >
-                {inv.buyer?.name}
-              </Link>
-          </Td>
-            <Td>
-              <Link to={`/persons/show/${inv.seller?._id}`}
-              style={{ color: "teal", fontWeight: "bold" }}
-               >
-              {inv.seller?.name}
-              </Link>
-            </Td>
-            <Td>
-              <InvoiceActions
-                invoice={inv}
-                onDetail={(i) => navigate(`/invoices/show/${i._id}`)}
-                onEdit={(i) => navigate(`/invoices/edit/${i._id}`)}
-                onDelete={handleDelete}
-              />
-            </Td>
-          </Tr>
-        ))}
-      </Tbody>
-    </Table>
-  </Box>
-);
-
+  );
 };
 
 export default InvoiceList;
