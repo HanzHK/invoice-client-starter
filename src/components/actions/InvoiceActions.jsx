@@ -1,11 +1,24 @@
 import React from "react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 
-const InvoiceActions = ({ invoice, onDetail, onEdit, onDelete }) => (
+const InvoiceActions = ({ invoiceId, onDetail, onEdit, onDelete }) => (
   <ButtonGroup size="sm" spacing={2}>
-    <Button colorScheme="blue" onClick={() => onDetail(invoice)}>Detail</Button>
-    <Button colorScheme="yellow" onClick={() => onEdit(invoice)}>Editovat</Button>
-    <Button colorScheme="red" onClick={() => onDelete(invoiceId)}>Smazat</Button>
+    <Button colorScheme="blue" onClick={() => onDetail(invoiceId)}>
+      Detail
+    </Button>
+    <Button colorScheme="yellow" onClick={() => onEdit(invoiceId)}>
+      Editovat
+    </Button>
+    <Button
+      colorScheme="red"
+      onClick={() => {
+        if (window.confirm("Opravdu chcete smazat tuto fakturu?")) {
+          onDelete(invoiceId);
+        }
+      }}
+    >
+      Smazat
+    </Button>
   </ButtonGroup>
 );
 
