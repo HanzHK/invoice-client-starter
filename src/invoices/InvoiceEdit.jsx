@@ -71,10 +71,9 @@ const InvoiceEdit = () => {
           name="invoiceNumber"
           label="Číslo faktury"
           value={invoice.invoiceNumber || ""}
-          handleChange={(e) =>
-            setInvoice({ ...invoice, invoiceNumber: e.target.value })
-          }
+          isReadOnly={true}
         />
+
 
         <InputSelect
           name="seller"
